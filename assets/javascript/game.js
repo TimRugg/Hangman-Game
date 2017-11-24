@@ -1,22 +1,12 @@
-//var counterWins = 2;
-//var counterGuessesRemaining = 5;
-var tempCorrectGuessesDisplayed = "_ A I _ D _ _ _";
-var tempIncorrectGuessesDisplayed = "O L M Z E F U";
-
 
 //	Start and set up variables
 //	allowedCharacters[] // array of characters allowed
 var allowedCharacters = "abcdefghijklmnopqrstuvwxyz";
 //	listOfWords[] // array of words to play
-var listOfWords = ["player","guesses","wins","losses","hangman","letter","character","number"];
-//	counterGamesPlayed = 0 // count the games played for current list
-var counterGamesPlayed = 0;
-var wordToGuess = listOfWords[counterGamesPlayed];
+var listOfWords = ["Player","guesses","wins","losses","hangman","letter","character","number"];
+ 
 //	askToPlayAnotherIndicator = false // this variable set to true when game is over and question displayed to play another press space bar
-//	validateSelectedKey[] = allowedCharacters[] // 1st time set list to check against master list
-/////////////var function(validateSelectedKey(selectedKey)) {allowedCharacters.indexOf(selectedKey)} 
-//return value true if key selected is valid
-// 	letterFoundIndicator = false // this variable set to true if key pressed is in targetWord
+
 //	counterDisplayedLetters = 0 // count number of letters displayed - use to indicate game won
 var counterDisplayedLetters = 0;
 //	counterIncorrectGuesses = 0 // count incorrect guesses
@@ -24,12 +14,24 @@ var counterIncorrectGuesses = 0;
 //	totalIncorrectGuessesAllowed = 12 // compare against counterIncorrect Guess - use to lose game
 var totalIncorrectGuessesAllowed = 12;
 //	string to display incorrect guesses
-var incorrectGuessesDisplayed=[];
+var incorrectGuessesDisplayed = "";
 //	counterGamesWon = 0 // displays number of games won
 var counterGamesWon = 0;
 //	counterGamesLost = 0 // displays number of games lost
 var counterGamesLost = 0;
-//
+//	counterGamesPlayed = 0 // count the games played for current list
+var counterGamesPlayed = 0;
+// pick first word to play
+var wordToGuess = listOfWords[counterGamesPlayed];
+// transform word to guess into an array
+var arrayWordToGuess = wordToGuess.split("");
+// start off with word displayed only as underscores
+var correctGuessesDisplayed = "_".repeat(wordToGuess.length);
+// transform displayed string into an array
+var arrayCorrectGuessesDisplayed = correctGuessesDisplayed.split("");
+// transform wordToGuess into lower case
+var wordToGuessLowerCase = wordToGuess.toLowerCase();
+
 function logToConsole(){
 	console.log("counterGamesPlayed= " + counterGamesPlayed);
 	console.log("counterDisplayedLetters= " + counterDisplayedLetters);
@@ -37,39 +39,72 @@ function logToConsole(){
 	console.log("totalIncorrectGuessesAllowed= " + totalIncorrectGuessesAllowed);
 	console.log("counterGamesWon= " + counterGamesWon);
 	console.log("counterGamesLost= " + counterGamesLost);
+	console.log("allowed letters " + allowedCharacters);
+	console.log("totalCorrectGuessesNeeded "+ wordToGuess.length);
 	};
 
 // Refresh HTML
 document.getElementById("gameMessage").innerHTML = "Press any key to get started!";
 document.getElementById("gameScoreWins").innerHTML = "Wins: " + counterGamesWon;
-document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "Current Word: " + tempCorrectGuessesDisplayed;
+document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "Current Word: " + correctGuessesDisplayed;
 document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "Number of  Guesses Remaining: " + (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
 document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "Incorrect Guesses: " + incorrectGuessesDisplayed;
 
 // 	Listen for key
 document.onkeyup = function(event) {
 // 	capture key press
-	var userKeyPressed = event.key.toLowerCase();
 	console.log("key pressed= " + userKeyPressed);
-	console.log("allowed letters " + allowedCharacters);
+	var userKeyPressed = event.key.toLowerCase();
 	if (allowedCharacters.indexOf(userKeyPressed) < 0) 
 		{
-		//either a previously guessed letter was selected or an invalid character was selected 
-		document.getElementById("gameMessage").innerHTML = "Be sure to select a new letter from A to Z";
+			//either a previously guessed letter was selected or an invalid character was selected 
+			document.getElementById("gameMessage").innerHTML = "Be sure to select a new letter from A to Z";
 		}
-	else if (wordToGuess.indexOf(userKeyPressed) < 0)
+	else if (wordToGuessLowerCase.indexOf(userKeyPressed) < 0)
 		{
-		//letter selected was not in the word to guess  
-		document.getElementById("gameMessage").innerHTML = "Try again!";
-		allowedCharacters = allowedCharacters.replace(userKeyPressed," ");
-		incorrectGuessesDisplayed.push(userKeyPressed); 
-		document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "Incorrect Guesses: " + incorrectGuessesDisplayed;
-		counterIncorrectGuesses++
-		if (totalIncorrectGuessesAllowed==counterIncorrectGuesses)
-			{document.getElementById("gameMessage").innerHTML = "***** GAME OVER *****";}
+			//letter selected was not in the word to guess  
+			document.getElementById("gameMessage").innerHTML = "Try again!";
+			allowedCharacters = allowedCharacters.replace(userKeyPressed," ");
+			// incorrectGuessesDisplayed.push(userKeyPressed);
+			incorrectGuessesDisplayed=incorrectGuessesDisplayed+userKeyPressed; 
+			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "Incorrect Guesses: " + incorrectGuessesDisplayed;
+			counterIncorrectGuesses++
+			if (totalIncorrectGuessesAllowed==counterIncorrectGuesses)
+				{
+					// LOSE GAME
+					document.getElementById("gameMessage").innerHTML = "***** GAME OVER *****";
+					counterGamesLost++
+					counterGamesPlayed++
+				}
 		}
 	else
-		{document.getElementById("gameMessage").innerHTML = "Good going!";}
+		{
+			//letter selected is in the word to guess
+			document.getElementById("gameMessage").innerHTML = "Good going!";
+			allowedCharacters = allowedCharacters.replace(userKeyPressed," ");
+			// loop through word to guess replacing underscores with valid letters and counting displayed letters
+			correctGuessesDisplayed="";
+			for (i=0; i<wordToGuess.length; i++)
+			{
+				//word to guess has the case as in word list	
+			 	if (arrayWordToGuess[i].toLowerCase()==userKeyPressed)
+			 	{
+			 		arrayCorrectGuessesDisplayed[i]=arrayWordToGuess[i];
+			 		counterDisplayedLetters++
+			 	}
+			 	//rebuild the string displayed on screen
+			 	correctGuessesDisplayed = correctGuessesDisplayed + arrayCorrectGuessesDisplayed[i];
+			}
+			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "Correct Guesses: " + correctGuessesDisplayed;
+			if (counterDisplayedLetters==wordToGuess.length)
+			{
+				//WIN GAME
+				document.getElementById("gameMessage").innerHTML = "***** WIN GAME *****";
+				counterGamesWon++
+				counterGamesPlayed++
+			}
+		}
+		
 logToConsole();
 }
 
@@ -100,9 +135,3 @@ logToConsole();
 //							if equal to total incorrect guesses allowedCharacters
 //								'LOSE GAME'
 //									increment counterGamesLost++
-//	
-//
-// CODE SNIPPETS FOR USE
-// 	var favTVshows = [];
-//  var tvShow;
-//  favTVshows.push(tvShow); -->							
