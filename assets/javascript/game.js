@@ -2,8 +2,16 @@
 //	allowedCharacters[] // array of characters allowed
 var allowedCharacters = "abcdefghijklmnopqrstuvwxyz";
 //	listOfWords[] // array of words to play
-//var listOfWords = ["Player","guesses","wins","losses","hangman","letter","character","number"];
-var listOfWords = ["one", "two", "three"];
+//  replace following with multi-array including pictures and sound
+var listOfWords = ["giraffe", "wildebeest", "gazelle", "zebra", "leopard"];
+var themeImage = "africa.jpg";
+// var listOfWords = ["dachshund", "beagle", "rottweiler", "greyhound", "bullmastiff"];
+// var themeImage = "dog.jpg";
+// var listOfWords = ["arabian", "mustang", "percheron", "appaloosa", "clydesdale"];
+// var themeImage = "horse.jpg";
+// var listOfWords = ["soccer", "hockey", "football", "baseball", "volleyball"];
+// var themeImage = "teamsport.jpg";
+
 //  number of words in list which is the number of games to play
 var totalWordsToPlay = listOfWords.length;
 //	totalIncorrectGuessesAllowed = 12 // compare against counterIncorrect Guess - use to lose game
@@ -36,25 +44,12 @@ var arrayCorrectGuessesDisplayed = correctGuessesDisplayed.split("");
 // transform wordToGuess into lower case
 var wordToGuessLowerCase = wordToGuess.toLowerCase();
 
-function logToConsole(){
-	console.log("counterGamesPlayed= " + counterGamesPlayed);
-	console.log("totalWordsToPlay= " + totalWordsToPlay);
-	// console.log("counterDisplayedLetters= " + counterDisplayedLetters);
-	// console.log("totalCorrectGuessesNeeded "+ wordToGuess.length);
-	// console.log("counterIncorrectGuesses= " + counterIncorrectGuesses);
-	console.log("counterGamesWon= " + counterGamesWon);
-	console.log("counterGamesLost= " + counterGamesLost);
-	// console.log("allGuessedLetters= " + allGuessedLetters);
-	// console.log("incorrectGuessesDisplayed= " + incorrectGuessesDisplayed);
-	// console.log("correctGuessesDisplayed= " + correctGuessesDisplayed);
-	};
-
-// Refresh HTML
+// Start HTML
 document.getElementById("gameMessage").innerHTML = "Choose a letter from A to Z to get started!";
-document.getElementById("gameScoreWins").innerHTML = counterGamesWon;
 document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
-document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
-document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
+document.getElementById("gameNumberOfGuessesRemaining").innerHTML = 12;
+document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = ".";
+document.getElementById("gameImage").setAttribute("src", "./assets/images/" + themeImage);
 
 // 	Listen for key
 document.onkeyup = function(event) {
@@ -66,10 +61,10 @@ document.onkeyup = function(event) {
 			if (counterGamesPlayed == totalWordsToPlay)
 			{
 			document.getElementById("gameMessage").innerHTML = "No more words to guess.";
-			document.getElementById("gameScoreWins").innerHTML = counterGamesWon + " Losses: " + counterGamesLost;
+			document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon + "<br>Losses<br>"+counterGamesLost;
 			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "";
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "";
-			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "";
+			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = ".";
 			}
 			else
 			{
@@ -85,10 +80,11 @@ document.onkeyup = function(event) {
 			arrayCorrectGuessesDisplayed = correctGuessesDisplayed.split("");
 			wordToGuessLowerCase = wordToGuess.toLowerCase();
 			document.getElementById("gameMessage").innerHTML = "Choose a letter from A to Z to get started!";
-			document.getElementById("gameScoreWins").innerHTML = counterGamesWon;
+			document.getElementById("gameScoreWins").innerHTML = "";
 			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
-			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
+			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = ".";
+			document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.jpg");
 			}		
 		}	
 	else if (allowedCharacters.indexOf(userKeyPressed) < 0) 
@@ -110,12 +106,13 @@ document.onkeyup = function(event) {
 			counterIncorrectGuesses++
 			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);			
-			//placeholder for individual pictures
-			document.getElementById("gameImage").setAttribute("src", "http://lorempixel.com/450/430");
+			//display sequence of images
+			document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman" + counterIncorrectGuesses + ".png");
 			if (totalIncorrectGuessesAllowed==counterIncorrectGuesses)
 				{
 					// LOSE GAME
 					document.getElementById("gameMessage").innerHTML = "***** GAME OVER ****** Choose any key to reset.";
+					document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon + "<br>Losses<br>"+counterGamesLost;
 					counterGamesLost++
 					counterGamesPlayed++
 					gameReset=true;
@@ -144,6 +141,8 @@ document.onkeyup = function(event) {
 			{
 				//WIN GAME
 				document.getElementById("gameMessage").innerHTML = "***** You Won! ****** Choose any key to reset.";
+				document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.png");
+				document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon + "<br>Losses<br>"+counterGamesLost;
 				counterGamesWon++
 				counterGamesPlayed++
 				gameReset=true;
