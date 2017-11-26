@@ -2,7 +2,10 @@
 //	allowedCharacters[] // array of characters allowed
 var allowedCharacters = "abcdefghijklmnopqrstuvwxyz";
 //	listOfWords[] // array of words to play
-var listOfWords = ["Player","guesses","wins","losses","hangman","letter","character","number"];
+//var listOfWords = ["Player","guesses","wins","losses","hangman","letter","character","number"];
+var listOfWords = ["one", "two", "three"];
+//  number of words in list which is the number of games to play
+var totalWordsToPlay = listOfWords.length;
 //	totalIncorrectGuessesAllowed = 12 // compare against counterIncorrect Guess - use to lose game
 var totalIncorrectGuessesAllowed = 12;
 //	counterGamesWon = 0 // displays number of games won
@@ -12,6 +15,7 @@ var counterGamesLost = 0;
 //	counterGamesPlayed = 0 // count the games played for current list
 var counterGamesPlayed = 0;
 
+//  to reset variables with new words
 var gameReset = false;
 //	counterDisplayedLetters = 0 // count number of letters displayed - use to indicate game won
 var counterDisplayedLetters = 0;
@@ -34,22 +38,23 @@ var wordToGuessLowerCase = wordToGuess.toLowerCase();
 
 function logToConsole(){
 	console.log("counterGamesPlayed= " + counterGamesPlayed);
-	console.log("counterDisplayedLetters= " + counterDisplayedLetters);
-	console.log("totalCorrectGuessesNeeded "+ wordToGuess.length);
-	console.log("counterIncorrectGuesses= " + counterIncorrectGuesses);
+	console.log("totalWordsToPlay= " + totalWordsToPlay);
+	// console.log("counterDisplayedLetters= " + counterDisplayedLetters);
+	// console.log("totalCorrectGuessesNeeded "+ wordToGuess.length);
+	// console.log("counterIncorrectGuesses= " + counterIncorrectGuesses);
 	console.log("counterGamesWon= " + counterGamesWon);
 	console.log("counterGamesLost= " + counterGamesLost);
-	console.log("allGuessedLetters= " + allGuessedLetters);
-	console.log("incorrectGuessesDisplayed= " + incorrectGuessesDisplayed);
-	console.log("correctGuessesDisplayed= " + correctGuessesDisplayed);
+	// console.log("allGuessedLetters= " + allGuessedLetters);
+	// console.log("incorrectGuessesDisplayed= " + incorrectGuessesDisplayed);
+	// console.log("correctGuessesDisplayed= " + correctGuessesDisplayed);
 	};
 
 // Refresh HTML
 document.getElementById("gameMessage").innerHTML = "Choose a letter from A to Z to get started!";
-document.getElementById("gameScoreWins").innerHTML = "Wins: " + counterGamesWon;
-document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "Current Word: " + correctGuessesDisplayed;
-document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "Number of  Guesses Remaining: " + (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
-document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "Incorrect Guesses: " + incorrectGuessesDisplayed;
+document.getElementById("gameScoreWins").innerHTML = counterGamesWon;
+document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
+document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
+document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
 
 // 	Listen for key
 document.onkeyup = function(event) {
@@ -58,6 +63,16 @@ document.onkeyup = function(event) {
 	console.log("key pressed= " + userKeyPressed);
 	if (gameReset)
 		{
+			if (counterGamesPlayed == totalWordsToPlay)
+			{
+			document.getElementById("gameMessage").innerHTML = "No more words to guess.";
+			document.getElementById("gameScoreWins").innerHTML = counterGamesWon + " Losses: " + counterGamesLost;
+			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "";
+			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "";
+			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "";
+			}
+			else
+			{
 			//ignore key selected and reset values
 			gameReset = false;
 			counterDisplayedLetters = 0;
@@ -70,10 +85,11 @@ document.onkeyup = function(event) {
 			arrayCorrectGuessesDisplayed = correctGuessesDisplayed.split("");
 			wordToGuessLowerCase = wordToGuess.toLowerCase();
 			document.getElementById("gameMessage").innerHTML = "Choose a letter from A to Z to get started!";
-			document.getElementById("gameScoreWins").innerHTML = "Wins: " + counterGamesWon;
-			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "Current Word: " + correctGuessesDisplayed;
-			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "Number of  Guesses Remaining: " + (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
-			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "Incorrect Guesses: " + incorrectGuessesDisplayed;		
+			document.getElementById("gameScoreWins").innerHTML = counterGamesWon;
+			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
+			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
+			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
+			}		
 		}	
 	else if (allowedCharacters.indexOf(userKeyPressed) < 0) 
 		{
@@ -92,8 +108,10 @@ document.onkeyup = function(event) {
 			allGuessedLetters = allGuessedLetters + userKeyPressed;
 			incorrectGuessesDisplayed=incorrectGuessesDisplayed + userKeyPressed; 
 			counterIncorrectGuesses++
-			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = "Incorrect Guesses: " + incorrectGuessesDisplayed;
-			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "Number of  Guesses Remaining: " + (totalIncorrectGuessesAllowed - counterIncorrectGuesses);			
+			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
+			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);			
+			//placeholder for individual pictures
+			document.getElementById("gameImage").setAttribute("src", "http://lorempixel.com/450/430");
 			if (totalIncorrectGuessesAllowed==counterIncorrectGuesses)
 				{
 					// LOSE GAME
@@ -121,7 +139,7 @@ document.onkeyup = function(event) {
 			 	//rebuild the string displayed on screen
 			 	correctGuessesDisplayed = correctGuessesDisplayed + arrayCorrectGuessesDisplayed[i];
 			}
-			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "Correct Guesses: " + correctGuessesDisplayed;
+			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
 			if (counterDisplayedLetters==wordToGuess.length)
 			{
 				//WIN GAME
