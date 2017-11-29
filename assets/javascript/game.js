@@ -1,15 +1,13 @@
 //	Start and set up variables
-//	allowedCharacters[] // array of characters allowed
 var allowedCharacters = "abcdefghijklmnopqrstuvwxyz";
-//	listOfWords[] // array of words to play
-//  replace following with multi-array including pictures and sound
-var listOfWords = ["giraffe", "wildebeest", "gazelle", "zebra", "leopard"];
-var themeImage = "africa.jpg";
-// var listOfWords = ["dachshund", "beagle", "rottweiler", "greyhound", "bullmastiff"];
-// var themeImage = "dog.jpg";
+// replace following with multi-array including pictures and sound
+// var listOfWords = ["giraffe", "wildebeest", "gazelle", "zebra", "leopard"];
+// var themeImage = "africa.jpg";
+var listOfWords = ["dachshund", "beagle", "rottweiler", "greyhound", "bullmastiff"];
+var themeImage = "dog.jpg";
 // var listOfWords = ["arabian", "mustang", "percheron", "appaloosa", "clydesdale"];
 // var themeImage = "horse.jpg";
-// var listOfWords = ["soccer", "hockey", "football", "baseball", "volleyball"];
+// var listOfWords = ["volleyball", "soccer", "hockey", "football", "baseball"];
 // var themeImage = "teamsport.jpg";
 
 //  number of words in list which is the number of games to play
@@ -22,7 +20,6 @@ var counterGamesWon = 0;
 var counterGamesLost = 0;
 //	counterGamesPlayed = 0 // count the games played for current list
 var counterGamesPlayed = 0;
-
 //  to reset variables with new words
 var gameReset = false;
 //	counterDisplayedLetters = 0 // count number of letters displayed - use to indicate game won
@@ -61,10 +58,15 @@ document.onkeyup = function(event) {
 			if (counterGamesPlayed == totalWordsToPlay)
 			{
 			document.getElementById("gameMessage").innerHTML = "No more words to guess.";
-			document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon + "<br>Losses<br>"+counterGamesLost;
 			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = "";
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "";
 			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = ".";
+				if (counterGamesWon > counterGamesLost) {
+					document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.png");
+				}
+				else {
+					document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman12.png");		
+				}
 			}
 			else
 			{
@@ -80,11 +82,10 @@ document.onkeyup = function(event) {
 			arrayCorrectGuessesDisplayed = correctGuessesDisplayed.split("");
 			wordToGuessLowerCase = wordToGuess.toLowerCase();
 			document.getElementById("gameMessage").innerHTML = "Choose a letter from A to Z to get started!";
-			document.getElementById("gameScoreWins").innerHTML = "";
 			document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);
 			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = ".";
-			document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.jpg");
+			document.getElementById("gameImage").setAttribute("src", "./assets/images/" + themeImage);
 			}		
 		}	
 	else if (allowedCharacters.indexOf(userKeyPressed) < 0) 
@@ -102,20 +103,34 @@ document.onkeyup = function(event) {
 			//letter selected was not in the word to guess  
 			document.getElementById("gameMessage").innerHTML = "Try again!";
 			allGuessedLetters = allGuessedLetters + userKeyPressed;
-			incorrectGuessesDisplayed=incorrectGuessesDisplayed + userKeyPressed; 
+			incorrectGuessesDisplayed = incorrectGuessesDisplayed + userKeyPressed; 
 			counterIncorrectGuesses++
 			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);			
 			//display sequence of images
 			document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman" + counterIncorrectGuesses + ".png");
-			if (totalIncorrectGuessesAllowed==counterIncorrectGuesses)
+			if (totalIncorrectGuessesAllowed == counterIncorrectGuesses)
 				{
 					// LOSE GAME
-					document.getElementById("gameMessage").innerHTML = "***** GAME OVER ****** Choose any key to reset.";
-					document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon + "<br>Losses<br>"+counterGamesLost;
 					counterGamesLost++
 					counterGamesPlayed++
-					gameReset=true;
+					gameReset = true;
+					document.getElementById("gameMessage").innerHTML = "***** GAME OVER ****** Choose any key to reset.";
+					document.getElementById("gameScoreLosses").innerHTML = "Losses<br>" + counterGamesLost;				
+
+					// loop through filling in with red missing letters
+					correctGuessesDisplayed = "";
+					for (i=0; i<wordToGuess.length; i++)
+					{
+						//find unguessed letters	
+					 	if (arrayCorrectGuessesDisplayed[i]=="_")
+					 	{
+					 		arrayCorrectGuessesDisplayed[i]= "<span style='color:red';>" + arrayWordToGuess[i] + "</span>";
+					 	}
+					 	//rebuild the string displayed on screen
+					 	correctGuessesDisplayed = correctGuessesDisplayed + arrayCorrectGuessesDisplayed[i];
+					}
+					document.getElementById("gameCorrectGuessesDisplayed").innerHTML = correctGuessesDisplayed;
 				}
 		}
 	else
@@ -124,7 +139,7 @@ document.onkeyup = function(event) {
 			document.getElementById("gameMessage").innerHTML = "Good going!";
 			allGuessedLetters = allGuessedLetters + userKeyPressed;
 			// loop through word to guess replacing underscores with valid letters and counting displayed letters
-			correctGuessesDisplayed="";
+			correctGuessesDisplayed = "";
 			for (i=0; i<wordToGuess.length; i++)
 			{
 				//word to guess has the case as in word list	
@@ -140,14 +155,12 @@ document.onkeyup = function(event) {
 			if (counterDisplayedLetters==wordToGuess.length)
 			{
 				//WIN GAME
-				document.getElementById("gameMessage").innerHTML = "***** You Won! ****** Choose any key to reset.";
-				document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.png");
-				document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon + "<br>Losses<br>"+counterGamesLost;
 				counterGamesWon++
 				counterGamesPlayed++
 				gameReset=true;
+				document.getElementById("gameMessage").innerHTML = "***** You Won! ****** Choose any key to reset.";
+				document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.png");
+				document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon;
 			}
 		}
-		
-logToConsole();
 }
