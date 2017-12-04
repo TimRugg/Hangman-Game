@@ -62,10 +62,10 @@ document.onkeyup = function(event) {
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = "";
 			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = ".";
 				if (counterGamesWon > counterGamesLost) {
-					document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.png");
+					document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.jpg");
 				}
 				else {
-					document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman12.png");		
+					document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman12.jpg");		
 				}
 			}
 			else
@@ -108,7 +108,7 @@ document.onkeyup = function(event) {
 			document.getElementById("gameIncorrectGuessedDisplayed").innerHTML = incorrectGuessesDisplayed;
 			document.getElementById("gameNumberOfGuessesRemaining").innerHTML = (totalIncorrectGuessesAllowed - counterIncorrectGuesses);			
 			//display sequence of images
-			document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman" + counterIncorrectGuesses + ".png");
+			document.getElementById("gameImage").setAttribute("src", "./assets/images/hangman" + counterIncorrectGuesses + ".jpg");
 			if (totalIncorrectGuessesAllowed == counterIncorrectGuesses)
 				{
 					// LOSE GAME
@@ -159,7 +159,7 @@ document.onkeyup = function(event) {
 				counterGamesPlayed++
 				gameReset=true;
 				document.getElementById("gameMessage").innerHTML = "***** You Won! ****** Choose any key to reset.";
-				document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.png");
+				document.getElementById("gameImage").setAttribute("src", "./assets/images/hangmanWIN.jpg");
 				document.getElementById("gameScoreWins").innerHTML = "Wins<br>" + counterGamesWon;
 			}
 		}
